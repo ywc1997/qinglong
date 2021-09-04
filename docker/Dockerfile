@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:lts-slim
 LABEL maintainer="whyour"
 ARG QL_URL=https://github.com/whyour/qinglong.git
 ARG QL_BRANCH=master
@@ -8,23 +8,9 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     PS1="\u@\h:\w \$ " \
     QL_DIR=/ql
 WORKDIR ${QL_DIR}
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && apk update -f \
-    && apk upgrade \
-    && apk --no-cache add -f bash \
-                             coreutils \
-                             moreutils \
-                             git \
-                             curl \
-                             wget \
-                             tzdata \
-                             perl \
-                             openssl \
-                             nginx \
-                             python3 \
-                             jq \
-                             openssh \
-    && rm -rf /var/cache/apk/* \
+RUN apt update -y \
+    && apt upgrade -y \
+    && apt install -y moreutils git curl wget tzdata perl openssl nginx python3 jq cron\
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && touch ~/.bashrc \
